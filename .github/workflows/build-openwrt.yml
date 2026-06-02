@@ -1,0 +1,58 @@
+name: My Custom Native OpenWrt Build
+
+on:
+  workflow_dispatch: # 开启手动触发按钮
+
+env:
+  REPO_URL: https://github.com/openwrt/openwrt.git
+  REPO_BRANCH: openwrt-25.12.4
+  TZ: Asia/Shanghai
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04 # 锁定 22.04 环境，完美兼容官方 Buildroot
+
+    steps:
+    - name: Checkout Your Repo
+      uses: actions/checkout@v4
+
+    - name: Prepare Ubuntu Toolchain
+      run: |
+        sudo apt-get update
+        sudo apt-get -y install build-essential clang flex bison gawk gettext \
+          git libncurses5-dev libssl-dev python3-setuptools rsync swig unzip \
+          zlib1g-dev file wget qemu-utils libelf-dev cc binfmt-support ccache
+
+    - name: Clone Official Source Code
+      run: |
+        git clone $REPO_URL -b $REPO_BRANCH openwrt
+
+    - name: Update & Install Feeds
+      working-directory: ./openwrt
+      run: |
+        ./scripts/feeds update -a
+        ./scripts/feeds install -a
+
+    - name: Inject My Custom Seed & Files
+      run: |
+        # 1. 自动把仓库里的 files 文件夹（小部件/网卡配置）投递给官方打包工具
+        [ -d files ] && cp -rf files openwrt/files
+        
+        # 2. 载入你的软件包种子配置
+        cd openwrt
+        [ -e ../seed.config ] && cp ../seed.config .config
+        
+        # 3. 触发官方工具链：校验依赖，补全驱动
+        make defconfig
+
+    - name: Download & Compile
+      working-directory: ./openwrt
+      run: |
+        make download -j$(nproc)
+        make -j$(nproc) || make -j1 V=s
+
+    - name: Upload My Firmware
+      uses: actions/upload-artifact@v4
+      with:
+        name: My-OpenWrt-Firmware
+        path: openwrt/bin/targets/x86/64/*
