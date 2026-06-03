@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04 # 锁定 22.04 环境，完美兼容官方 Buildroot
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Your Repo
