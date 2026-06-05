@@ -55,18 +55,9 @@ jobs:
         ./scripts/feeds install -a
         ./scripts/feeds install -a
 
-    - name: Import external feeds - passwall
-      working-directory: ./openwrt
-      run: |
-        rm -rf feeds/packages/net/{xray-core,v2ray-geodata,sing-box,chinadns-ng,dns2socks,hysteria,ipt2socks,microsocks,naiveproxy,shadowsocks-rust,shadowsocksr-libev,simple-obfs,tcping,v2ray-plugin,xray-plugin,geoview,shadow-tls}
-        git clone https://github.com/Openwrt-Passwall/openwrt-passwall-packages package/passwall-packages
-        rm -rf feeds/luci/applications/luci-app-passwall
-        git clone https://github.com/Openwrt-Passwall/openwrt-passwall package/passwall-luci
-
     #- name: Import external feeds - JerryKuKu Argon
     #  working-directory: ./openwrt
     #  run: |
-    #    git clone -b 18.06 https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon-jerrykuku
 
     - name: Configuration Customization - Build_x86_64
       env:
