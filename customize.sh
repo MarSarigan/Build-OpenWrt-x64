@@ -15,7 +15,7 @@ sed -i 's/$1$V4UetPzk$CYXluq4wUazHjmCDBCqXF.//g' openwrt/package/lean/default-se
 #rm openwrt/package/lean/luci-theme-argon -rf
 
 # 直接重写 99-default_network，将 eth0 设为 WAN，eth1 设为 LAN
-cat << EOF > openwrt/package/base-files/files/etc/board.d/99-default_network
+cat << 'EOF' > openwrt/package/base-files/files/etc/board.d/99-default_network
 #!/bin/sh
 # 强制覆盖默认网络逻辑：eth0 为 WAN，eth1 为 LAN
 . /lib/functions/uci-defaults.sh
