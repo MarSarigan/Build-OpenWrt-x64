@@ -28,6 +28,3 @@ ucidef_set_interfaces_lan_wan "eth1" "eth0"
 board_config_flush
 exit 0
 EOF
-
-# 确保脚本有执行权限
-chmod +x package/base-files/files/etc/board.d/99-default_network
